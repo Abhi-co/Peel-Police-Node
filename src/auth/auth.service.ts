@@ -4,15 +4,14 @@ import { DatabaseService } from 'src/database.service';
 
 @Injectable()
 export class AuthService {
-    constructor(private readonly jwtService: JwtService,private readonly databasesrv: DatabaseService) {}
+    constructor(private readonly jwtService: JwtService,
+      private readonly databaseService: DatabaseService) {}
 
     async login(username: string, password: string): Promise<string> {
         // Validate username and password (e.g., from a database)
-
-        this.databasesrv.query('select * from dbo.AdminMasterUser')
-
         const isValidUser = await this.validateUser(username, password);
-       
+
+        console.log("isValidUser:",isValidUser);
     
         if (isValidUser) {
           // Generate JWT token
@@ -25,10 +24,11 @@ export class AuthService {
       }
     
       private async validateUser(username: string, password: string): Promise<boolean> {
-        // Example: Validate user from a database
-        // You can replace this with your own logic
-       // this.databasesrv.connect()
-        return (username === 'Abhishek' && password === 'Vos@123');
+        // Fetch user credentials from the database
+        const user = await this.databaseService.getUserByUsername(username);
+        console.log("user:",user);
+        // Check if user exists and password matches
+        return user && user.Password === password;
       }
     
     
