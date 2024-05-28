@@ -19,16 +19,25 @@ export class AuthService {
           return token;
         } else {
           // Throw an error if authentication fails
-          throw new Error('Invalid username or password');
+         // throw new Error('Invalid username or password');
+         return 'Invalid username or password'
         }
       }
     
       private async validateUser(username: string, password: string): Promise<boolean> {
         // Fetch user credentials from the database
         const user = await this.databaseService.getUserByUsername(username);
-        console.log("user:",user);
+        if(user){
+          console.log("user:",user);
+          return user && user.Password === password;
+
+        }
+        else{
+          return false
+        }
+
         // Check if user exists and password matches
-        return user && user.Password === password;
+        
       }
     
     
